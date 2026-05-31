@@ -1,0 +1,33 @@
+```yaml
+name: Branch Naming Convention
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  branch-name-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate branch name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+
+          echo "Checking branch: $BRANCH_NAME"
+
+          REGEX='^(feature|fix|chore|hotfix)\/[a-z0-9-]+$'
+
+          if [[ ! "$BRANCH_NAME" =~ $REGEX ]]; then
+            echo "❌ Invalid branch name."
+
+            echo "Examples:"
+            echo "feature/s1-01-fastapi-setup"
+            echo "fix/s2-agent-timeout-bug"
+            echo "chore/update-dependencies"
+
+            exit 1
+          fi
+
+          echo "✅ Branch name is valid."
+```
